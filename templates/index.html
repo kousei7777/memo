@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>フォームページ</title>
+	<style>
+		body {
+		
+		text-align: center;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        form {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        input[type="text"],
+        select,
+        input[type="date"] {
+            padding: 5px;
+            margin-right: 5px;
+        }
+
+        input[type="submit"] {
+            padding: 5px 10px;
+            background-color: blue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0077FF;
+        }
+	  form[action="/edit"] input[type="submit"] {
+            background-color: green;
+        }
+
+        form[action="/edit"] input[type="submit"]:hover {
+            background-color: #00CC00;
+        }
+	  form[action="/finish"] input[type="submit"] {
+            background-color: red;
+        }
+
+        form[action="/finish"] input[type="submit"]:hover {
+            background-color: #FF0077;
+        }
+	</style>
+</head>
+<body>
+	<h1>タスク管理帳</h1>
+	<form method="post" action="/">
+		<input type="text" name="task" placeholder="タスク">
+		<input type="text" name="task_details" placeholder="詳細">
+		<select name="category_id">
+			{% for category in categories %}
+			<option value="{{category.id}}">{{category.category_name}}</option>
+			{% endfor %}
+		</select>
+		<input type="date" name="date_added">
+		<input type="submit" value="送信">
+	</form>
+	<ul>
+		{% for task in tasks %}
+		<li>
+			<form method="post" action="/edit">
+				<input type="text" name="task" value="{{task['task_name']}}">
+				<input type="text" name="task_details" value="{{task['task_details']}}">
+				<input type="hidden" name="task_id" value="{{task['id']}}">
+
+				<select name="category_id">
+					{% for category in categories %}
+					<option value="{{category.id}}"
+						{% if task.category_id == category.id %}
+							selected
+						{% endif %}
+					>{{category.category_name}}</option>
+					{% endfor %}
+				</select>
+				<input type="date" name="date_added" value="{{task.date_added}}">
+
+				<input type="submit" value="編集">
+			</form>
+			<form method="post" action="/finish">
+				<input type="hidden" name="task_id" value="{{task['id']}}">
+				<input type="submit" value="削除">
+			</form>
+		</li>
+		{% endfor %}
+	</ul>
+</body>
+</html>
